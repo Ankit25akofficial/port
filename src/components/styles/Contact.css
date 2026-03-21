@@ -243,7 +243,7 @@ a.contact-social {
     padding-bottom: 50px;
   }
   .contact-container {
-    width: calc(100% - 25px);
+    width: 100%;
   }
   .contact-form-title {
     font-size: 40px;

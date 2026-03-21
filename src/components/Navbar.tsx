@@ -1,14 +1,17 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import HoverLinks from "./HoverLinks";
 import { gsap } from "gsap";
 import Lenis from "lenis";
 import "./styles/Navbar.css";
+import { config } from "../config";
 
 gsap.registerPlugin(ScrollTrigger);
 export let lenis: Lenis | null = null;
 
 const Navbar = () => {
+  const headerRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     // Initialize Lenis smooth scroll
     lenis = new Lenis({
@@ -22,17 +25,14 @@ const Navbar = () => {
       infinite: false,
     });
 
-    // Start paused
     lenis.stop();
 
-    // Handle smooth scroll animation frame
     function raf(time: number) {
       lenis?.raf(time);
       requestAnimationFrame(raf);
     }
     requestAnimationFrame(raf);
 
-    // Handle navigation links
     let links = document.querySelectorAll(".header ul a");
     links.forEach((elem) => {
       let element = elem as HTMLAnchorElement;
@@ -54,40 +54,58 @@ const Navbar = () => {
       });
     });
 
-    // Handle resize
     window.addEventListener("resize", () => {
       lenis?.resize();
     });
+
+    // --- NEW GSAP ENTRY ANIMATION --- //
+    // Animate navbar elements dropping down with a stagger
+    if (headerRef.current) {
+      const navElements = headerRef.current.querySelectorAll(".nav-anim");
+      gsap.fromTo(
+        navElements,
+        { y: -50, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 1.2,
+          stagger: 0.1,
+          ease: "expo.out",
+          delay: 2.5, // wait for loading screen
+        }
+      );
+    }
 
     return () => {
       lenis?.destroy();
     };
   }, []);
+
   return (
     <>
-      <div className="header">
-        <a href="/#" className="navbar-title" data-cursor="disable">
-          Logo
+      <div className="header" ref={headerRef}>
+        <a href="/#" className="navbar-title nav-anim" data-cursor="disable">
+          © {new Date().getFullYear()} {config.developer.name.toUpperCase()}
         </a>
-        <a
-          href="mailto:ankit.devfx@gmail.com"
-          className="navbar-connect"
-          data-cursor="disable"
-        >
-          ankit.devfx@gmail.com
-        </a>
+
+        {/* Replaced Email with a unique Available for Work badge */}
+        <div className="navbar-status nav-anim" data-cursor="disable">
+          <div className="status-dot"></div>
+          Available for freelance
+        </div>
+
         <ul>
-          <li>
+          <li className="nav-anim">
             <a data-href="#about" href="#about">
               <HoverLinks text="ABOUT" />
             </a>
           </li>
-          <li>
+          <li className="nav-anim">
             <a data-href="#work" href="#work">
               <HoverLinks text="WORK" />
             </a>
           </li>
-          <li>
+          <li className="nav-anim">
             <a data-href="#contact" href="#contact">
               <HoverLinks text="CONTACT" />
             </a>

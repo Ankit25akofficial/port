@@ -110,6 +110,15 @@ const Contact = () => {
               Github <MdArrowOutward />
             </a>
             <a
+              href={config.contact.leetcode}
+              target="_blank"
+              rel="noopener noreferrer"
+              data-cursor="disable"
+              className="contact-social"
+            >
+              LeetCode <MdArrowOutward />
+            </a>
+            <a
               href={config.contact.linkedin}
               target="_blank"
               rel="noopener noreferrer"

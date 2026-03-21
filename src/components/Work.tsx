@@ -11,59 +11,96 @@ gsap.registerPlugin(ScrollTrigger);
 
 const Work = () => {
   useEffect(() => {
-    // Disable pinning on mobile to allow scrolling
-    if (window.innerWidth <= 768) return;
+    let timeline: gsap.core.Timeline | null = null;
+    let mm = gsap.matchMedia();
 
-    let translateX: number = 0;
-
-    function setTranslateX() {
+    // Desktop Animation
+    mm.add("(min-width: 769px)", () => {
+      let translateX = 0;
       const box = document.getElementsByClassName("work-box");
-      if (box.length === 0) return;
-      const rectLeft = document
-        .querySelector(".work-container")!
-        .getBoundingClientRect().left;
-      const rect = box[0].getBoundingClientRect();
-      const parentWidth = box[0].parentElement!.getBoundingClientRect().width;
-      let padding: number =
-        parseInt(window.getComputedStyle(box[0]).padding) / 2;
-      translateX = rect.width * box.length - (rectLeft + parentWidth) + padding;
-    }
+      if (box.length > 0) {
+        const rectLeft = document
+          .querySelector(".work-container")!
+          .getBoundingClientRect().left;
+        const rect = box[0].getBoundingClientRect();
+        const parentWidth = box[0].parentElement!.getBoundingClientRect().width;
+        let padding = parseInt(window.getComputedStyle(box[0]).padding) / 2;
+        translateX = rect.width * box.length - (rectLeft + parentWidth) + padding;
+      }
 
-    setTranslateX();
+      timeline = gsap.timeline({
+        scrollTrigger: {
+          trigger: ".work-section",
+          start: "top top",
+          end: `+=${translateX}`,
+          scrub: 1,
+          pin: true,
+          pinSpacing: true,
+          anticipatePin: 1,
+          id: "work-desktop",
+        },
+      });
 
-    let timeline = gsap.timeline({
-      scrollTrigger: {
-        trigger: ".work-section",
-        start: "top top",
-        end: `+=${translateX}`,
-        scrub: 1,
-        pin: true,
-        pinSpacing: true,
-        anticipatePin: 1,
-        id: "work",
-        invalidateOnRefresh: true,
-      },
+      timeline.to(".work-flex", {
+        x: -translateX,
+        ease: "none",
+      });
+
+      gsap.utils.toArray(".work-box").forEach((box: any) => {
+        gsap.fromTo(
+          box.querySelectorAll(".work-info > *, .work-image"),
+          { opacity: 0, x: 50 },
+          {
+            opacity: 1,
+            x: 0,
+            stagger: 0.1,
+            duration: 0.8,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: box,
+              containerAnimation: timeline as any,
+              start: "left 80%",
+              toggleActions: "play none none reverse",
+            },
+          }
+        );
+      });
     });
 
-    timeline.to(".work-flex", {
-      x: -translateX,
-      ease: "none",
+    // Mobile Animation (Vertical Scroll)
+    mm.add("(max-width: 768px)", () => {
+      gsap.utils.toArray(".work-box").forEach((box: any) => {
+        gsap.fromTo(
+          box,
+          { opacity: 0, y: 50 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: box,
+              start: "top 85%",
+              toggleActions: "play none none reverse",
+            },
+          }
+        );
+      });
     });
 
-    // Refresh ScrollTrigger after layout settles
-    ScrollTrigger.refresh();
+    setTimeout(() => {
+      ScrollTrigger.refresh(true);
+    }, 500);
 
-    // Clean up
     return () => {
-      timeline.kill();
-      ScrollTrigger.getById("work")?.kill();
+      mm.revert(); // Automatically cleans up ScrollTriggers matchMedia
     };
   }, []);
   return (
     <div className="work-section" id="work">
       <div className="work-container section-container">
-        <h2>
-          My <span>Work</span>
+        <h2 className="work-header-title" data-text="PORTFOLIO">
+          Projects
         </h2>
         <div className="work-flex">
           {config.projects.slice(0, 5).map((project, index) => (

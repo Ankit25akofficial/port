@@ -1,92 +1,74 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 import "./styles/Loading.css";
 import { useLoading } from "../context/LoadingProvider";
-
-import Marquee from "react-fast-marquee";
+import gsap from "gsap";
 
 const Loading = ({ percent }: { percent: number }) => {
   const { setIsLoading } = useLoading();
-  const [loaded, setLoaded] = useState(false);
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [clicked, setClicked] = useState(false);
-
-  if (percent >= 100) {
-    setTimeout(() => {
-      setLoaded(true);
-      setTimeout(() => {
-        setIsLoaded(true);
-      }, 1000);
-    }, 600);
-  }
+  const textRef = useRef<HTMLDivElement>(null);
+  const brandRef = useRef<HTMLDivElement>(null);
+  const panelsRef = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
-    import("./utils/initialFX").then((module) => {
-      if (isLoaded) {
-        setClicked(true);
-        setTimeout(() => {
-          if (module.initialFX) {
-            module.initialFX();
-          }
-          setIsLoading(false);
-        }, 900);
-      }
-    });
-  }, [isLoaded]);
+    if (percent >= 100) {
+      // 1. Give it a tiny moment to rest at 100%
+      setTimeout(() => {
+        const tl = gsap.timeline({
+          onComplete: () => {
+            import("./utils/initialFX").then((module) => {
+              if (module.initialFX) {
+                module.initialFX();
+              }
+              setIsLoading(false);
+            });
+          },
+        });
 
-  function handleMouseMove(e: React.MouseEvent<HTMLElement>) {
-    const { currentTarget: target } = e;
-    const rect = target.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    target.style.setProperty("--mouse-x", `${x}px`);
-    target.style.setProperty("--mouse-y", `${y}px`);
-  }
+        // Split text animation & slide up
+        tl.to([textRef.current, brandRef.current], {
+          y: -50,
+          opacity: 0,
+          duration: 0.6,
+          stagger: 0.1,
+          ease: "power3.inOut",
+        });
+
+        // Elevate the 5 panels upwards to reveal the site smoothly
+        tl.to(
+          panelsRef.current,
+          {
+            yPercent: -100,
+            duration: 0.8,
+            stagger: 0.08,
+            ease: "power4.inOut",
+          },
+          "-=0.2"
+        );
+      }, 500);
+    }
+  }, [percent, setIsLoading]);
 
   return (
-    <>
-      <div className="loading-header">
-        <a href="/#" className="loader-title" data-cursor="disable">
-          Logo
-        </a>
-        <div className={`loaderGame ${clicked && "loader-out"}`}>
-          <div className="loaderGame-container">
-            <div className="loaderGame-in">
-              {[...Array(27)].map((_, index) => (
-                <div className="loaderGame-line" key={index}></div>
-              ))}
-            </div>
-            <div className="loaderGame-ball"></div>
-          </div>
-        </div>
-      </div>
-      <div className="loading-screen">
-        <div className="loading-marquee">
-          <Marquee>
-            <span>&nbsp; Video Editor &nbsp;</span> <span>&nbsp; Full Stack Developer &nbsp;</span>
-            <span>&nbsp; Video Editor &nbsp;</span> <span>&nbsp; Full Stack Developer &nbsp;</span>
-          </Marquee>
-        </div>
+    <div className="new-loading-screen">
+      {[0, 1, 2, 3, 4].map((i) => (
         <div
-          className={`loading-wrap ${clicked && "loading-clicked"}`}
-          onMouseMove={(e) => handleMouseMove(e)}
-        >
-          <div className="loading-hover"></div>
-          <div className={`loading-button ${loaded && "loading-complete"}`}>
-            <div className="loading-container">
-              <div className="loading-content">
-                <div className="loading-content-in">
-                  Loading <span>{percent}%</span>
-                </div>
-              </div>
-              <div className="loading-box"></div>
-            </div>
-            <div className="loading-content2">
-              <span>Welcome</span>
-            </div>
-          </div>
+          key={i}
+          className="new-loading-panel"
+          ref={(el) => {
+            panelsRef.current[i] = el;
+          }}
+        />
+      ))}
+      <div className="new-loading-content-wrapper">
+        <div ref={textRef} className="new-loading-text">
+          {percent}
+          <span className="new-loading-percent-sign">%</span>
+        </div>
+        <div ref={brandRef} className="new-loading-brand">
+          Loading
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

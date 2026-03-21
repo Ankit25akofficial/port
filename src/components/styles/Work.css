@@ -1,11 +1,32 @@
-.work-section h2 {
+.work-header-title {
+  position: relative;
+  text-align: center;
+  font-size: 65px;
+  font-weight: 700;
+  color: #fff;
+  font-family: "Geist", sans-serif;
   margin-top: 100px;
-  font-size: 70px;
-  font-weight: 500;
+  margin-bottom: 50px;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
 }
 
-.work-section h2>span {
-  color: var(--accentColor);
+.work-header-title::before {
+  content: attr(data-text);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 12vw;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.03);
+  white-space: nowrap;
+  z-index: -1;
+  pointer-events: none;
+  letter-spacing: 15px;
 }
 
 .work-section {
@@ -68,31 +89,49 @@
   justify-content: space-between;
   display: flex;
   width: 100%;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
+  align-items: center;
 }
 
 .work-title>div {
   text-align: right;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 }
 
 .work-title h3 {
-  font-size: 50px;
-  line-height: 50px;
+  font-size: 90px;
+  line-height: 90px;
   margin: 0;
-  font-weight: 600;
+  font-weight: 800;
+  font-family: "Geist", sans-serif;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3);
+  transition: all 0.5s ease;
+}
+
+.work-box:hover .work-title h3 {
+  color: #fff;
+  -webkit-text-stroke: 0px transparent;
+  text-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
 }
 
 .work-info h4 {
-  font-size: 26px;
-  font-weight: 500;
+  font-size: 28px;
+  font-weight: 600;
   margin: 0;
+  letter-spacing: 0.5px;
+  color: #eae5ec;
 }
 
 .work-info p {
-  font-weight: 200;
-  color: #adacac;
+  font-weight: 300;
+  color: #b0b0b0;
   margin: 0;
-  margin-top: 3px;
+  margin-top: 5px;
+  font-size: 15px;
+  line-height: 24px;
 }
 
 .work-info>p {
@@ -127,10 +166,20 @@
   display: flex;
   width: 100%;
   justify-content: center;
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+.work-box:hover .work-image img {
+  transform: scale(1.05);
 }
 
 .work-image-in {
   position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
 .work-link {
@@ -172,6 +221,8 @@
 .work-image img {
   max-width: 100%;
   max-height: 350px;
+  transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+  display: block;
 }
 
 @media only screen and (max-height: 900px) {
@@ -320,6 +371,11 @@
   .work-section {
     height: auto;
     min-height: auto;
+    padding-top: 50px;
+    position: relative;
+    clear: both;
+    display: block;
+    margin-top: 50px;
   }
 
   .work-flex {
@@ -327,6 +383,9 @@
     margin-left: 0;
     padding-right: 0;
     gap: 0;
+    position: relative;
+    clear: both;
+    display: block;
   }
 
   .work-box {

@@ -8,7 +8,8 @@ export const config = {
     social: {
         github: "ankit-devfx",
         email: "ankit.devfx@gmail.com",
-        location: "India"
+        location: "India",
+        leetcodeUsername: "ankitkumar_ak"
     },
     about: {
         title: "About Me",
@@ -180,7 +181,8 @@ export const config = {
         linkedin: "https://www.linkedin.com/in/ankitofficial25/",
         twitter: "https://x.com/Ankitofficial25",
         facebook: "https://www.facebook.com/",
-        instagram: "https://www.instagram.com/ankit_.ak"
+        instagram: "https://www.instagram.com/ankit_.ak",
+        leetcode: "https://leetcode.com/u/ankitkumar_ak/"
     },
     skills: {
         develop: {
