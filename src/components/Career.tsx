@@ -16,11 +16,32 @@ const getDisplayYear = (period: string) => {
 
 const Career = () => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
   const lineRef = useRef<HTMLDivElement>(null);
   const boxesRef = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
+      // Title Animation
+      if (titleRef.current) {
+        gsap.fromTo(
+          titleRef.current,
+          { opacity: 0, y: 80, filter: "blur(10px)" },
+          {
+            opacity: 1,
+            y: 0,
+            filter: "blur(0px)",
+            duration: 1.2,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: titleRef.current,
+              start: "top 85%",
+              toggleActions: "play none none reverse",
+            },
+          }
+        );
+      }
+
       // Animate the main gradient timeline drawing down
       gsap.to(lineRef.current, {
         maxHeight: "100%",
@@ -67,7 +88,7 @@ const Career = () => {
   return (
     <div className="career-section section-container" ref={containerRef}>
       <div className="career-container">
-        <h2 className="career-title-anim">
+        <h2 className="career-title-anim" ref={titleRef}>
           My career <span>&</span>
           <br /> experience
         </h2>

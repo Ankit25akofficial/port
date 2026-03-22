@@ -14,24 +14,26 @@ const Navbar = () => {
 
   useEffect(() => {
     // Initialize Lenis smooth scroll
-    lenis = new Lenis({
-      duration: 1.7,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      orientation: "vertical",
-      gestureOrientation: "vertical",
-      smoothWheel: true,
-      wheelMultiplier: 1.7,
-      touchMultiplier: 2,
-      infinite: false,
-    });
+    if (window.innerWidth > 768) {
+      lenis = new Lenis({
+        duration: 1.7,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        orientation: "vertical",
+        gestureOrientation: "vertical",
+        smoothWheel: true,
+        wheelMultiplier: 1.7,
+        touchMultiplier: 2,
+        infinite: false,
+      });
 
-    lenis.stop();
+      lenis.stop();
 
-    function raf(time: number) {
-      lenis?.raf(time);
+      const raf = (time: number) => {
+        lenis?.raf(time);
+        requestAnimationFrame(raf);
+      };
       requestAnimationFrame(raf);
     }
-    requestAnimationFrame(raf);
 
     let links = document.querySelectorAll(".header ul a");
     links.forEach((elem) => {
@@ -55,7 +57,7 @@ const Navbar = () => {
     });
 
     window.addEventListener("resize", () => {
-      lenis?.resize();
+      if (lenis) lenis.resize();
     });
 
     // --- NEW GSAP ENTRY ANIMATION --- //

@@ -289,8 +289,8 @@ h3.career-year {
 
   .career-section h2 {
     width: 100%;
-    font-size: 45px;
-    line-height: 45px;
+    font-size: clamp(32px, 11vw, 45px);
+    line-height: 1.1;
     margin-top: 0px;
   }
 
