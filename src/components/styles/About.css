@@ -105,6 +105,8 @@
     height: var(--vh);
     padding: 0px;
     opacity: 1;
+    position: relative;
+    z-index: 1;
   }
   .about-me {
     padding: 0px;
