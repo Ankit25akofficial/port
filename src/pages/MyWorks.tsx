@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { config } from "../config";
 import "./MyWorks.css";
 import { FaGithub } from "react-icons/fa";
+import { FiExternalLink } from "react-icons/fi";
 
 const MyWorks = () => {
   return (
@@ -39,6 +40,18 @@ const MyWorks = () => {
                   title="View on GitHub"
                 >
                   <FaGithub /> View Repository
+                </a>
+              )}
+              {project.liveLink && (
+                <a
+                  href={project.liveLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="project-live-link"
+                  data-cursor="disable"
+                  title="View Live Site"
+                >
+                  <FiExternalLink /> Live Demo
                 </a>
               )}
             </div>

@@ -101,6 +101,26 @@ export const config = {
             technologies: ["Premiere Pro", "After Effects", "Final Cut Pro", "Video Editing"]
         }
     ],
+    education: [
+        {
+            degree: "Bachelor of Technology (Computer Science & Engineering)",
+            institution: "Lovely Professional University",
+            period: "2023 – Present",
+            score: "CGPA: 7.8"
+        },
+        {
+            degree: "Senior Secondary Education (12th Grade)",
+            institution: "Kendriya Vidyalaya",
+            period: "Year: 2022 - 2023",
+            score: "Percentage: 92%"
+        },
+        {
+            degree: "Secondary Education (10th Grade)",
+            institution: "Kendriya Vidyalaya",
+            period: "Year: 2020 - 2021",
+            score: "Percentage: 91%"
+        }
+    ],
     projects: [
         {
             id: 1,
@@ -109,7 +129,8 @@ export const config = {
             technologies: "React, Node.js, Express, MongoDB, Clerk",
             image: "/images/finsync.png",
             description: "A production-ready Personal Finance Manager & Budget Tracker. Allows users to securely track income, expenses, budgets, and financial insights through an interactive dashboard.",
-            githubLink: "https://github.com/Ankit25akofficial"
+            githubLink: "https://github.com/Ankit25akofficial/FinSync-Pro",
+            liveLink: "https://fin-sync-pro.vercel.app/"
         },
         {
             id: 2,
@@ -118,7 +139,8 @@ export const config = {
             technologies: "React, TypeScript, Syntax Highlighting",
             image: "/images/codetoimage.png",
             description: "A developer tool that converts code snippets into beautifully formatted images with syntax highlighting. Useful for documentation, tutorials, presentations, and social media sharing.",
-            githubLink: "https://github.com/Ankit25akofficial"
+            githubLink: "https://github.com/Ankit25akofficial/CodeToImage",
+            liveLink: "https://code-to-image-jet.vercel.app/"
         },
         {
             id: 3,
@@ -127,7 +149,8 @@ export const config = {
             technologies: "React, Node.js, MongoDB, Express",
             image: "/images/ecase.png",
             description: "A modern web-based judicial case management platform designed to streamline legal workflows under the Digital India initiative. Supports case tracking, document uploads, and role-based access for Admin, Judge, and Client.",
-            githubLink: "https://github.com/Ankit25akofficial"
+            githubLink: "https://github.com/Ankit25akofficial",
+            liveLink: ""
         },
         {
             id: 4,
@@ -136,7 +159,8 @@ export const config = {
             technologies: "Python, GUI",
             image: "/images/processmonitor.png",
             description: "A Python-based GUI application that monitors system processes, CPU usage, and memory consumption in real time, helping users analyze system performance efficiently.",
-            githubLink: "https://github.com/Ankit25akofficial"
+            githubLink: "https://github.com/Ankit25akofficial",
+            liveLink: ""
         },
         {
             id: 5,
@@ -145,25 +169,28 @@ export const config = {
             technologies: "Python, C++, Neural Networks, Bitboards, UCI Protocol",
             image: "/images/redxchess.png",
             description: "A high-performance chess engine rated 3640 ELO. Features advanced search algorithms, neural network evaluation, and optimized bitboard representation for lightning-fast move generation.",
-            githubLink: "https://github.com/Ankit25akofficial"
+            githubLink: "https://github.com/Ankit25akofficial",
+            liveLink: "/play"
         },
         {
             id: 6,
-            title: "Floodhub",
-            category: "AI / ML",
-            technologies: "Python, TensorFlow, Pandas, React, FastAPI, GIS",
-            image: "/images/floodhub.png",
-            description: "A flood prediction model specifically designed for India's river systems. Analyzes weather patterns, water levels, and historical data to provide accurate flood forecasts and alerts.",
-            githubLink: "https://github.com/Ankit25akofficial"
-        },
-        {
-            id: 7,
             title: "copy-paste-notepad",
             category: "Web App",
             technologies: "HTML, CSS, JavaScript",
             image: "/images/notepad.png",
             description: "A simple and efficient notepad application that allows users to create, edit, and save text notes. Features a clean interface, real-time saving, and easy note management.",
-            githubLink: "https://github.com/Ankit25akofficial"
+            githubLink: "https://github.com/Ankit25akofficial",
+            liveLink: "https://copy-paste-notepad.vercel.app/"
+        },
+        {
+            id: 7,
+            title: "Floodhub",
+            category: "AI / ML",
+            technologies: "Python, TensorFlow, Pandas, React, FastAPI, GIS",
+            image: "/images/floodhub.png",
+            description: "A flood prediction model specifically designed for India's river systems. Analyzes weather patterns, water levels, and historical data to provide accurate flood forecasts and alerts.",
+            githubLink: "https://github.com/Ankit25akofficial",
+            liveLink: ""
         },
         {
             id: 8,
@@ -172,7 +199,8 @@ export const config = {
             technologies: "Kotlin, Android SDK, Firebase, Python, Encryption",
             image: "/images/hektools.png",
             description: "An advanced Android monitoring and security research tool. Features remote device management, activity logging, and encrypted data transmission for security testing purposes.",
-            githubLink: "https://github.com/Ankit25akofficial"
+            githubLink: "https://github.com/Ankit25akofficial",
+            liveLink: ""
         }
     ],
     contact: {

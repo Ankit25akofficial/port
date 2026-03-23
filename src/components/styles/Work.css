@@ -162,6 +162,30 @@
   transform: translateY(-2px);
 }
 
+.project-live-link-work {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background-color: rgba(127, 64, 255, 0.15);
+  color: #c4b5fd;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(127, 64, 255, 0.3);
+  margin-top: 10px;
+  width: max-content;
+}
+
+.project-live-link-work:hover {
+  background-color: #7f40ff;
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(127, 64, 255, 0.4);
+}
+
 .work-image {
   display: flex;
   width: 100%;
