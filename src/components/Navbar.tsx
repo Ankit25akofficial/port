@@ -149,12 +149,6 @@ const Navbar = () => {
           </a>
         </div>
 
-        <div className="magnetic-wrap absolute-center nav-anim">
-          <div className="navbar-status magnetic-inner" data-cursor="disable">
-            <div className="status-dot"></div>
-            Available for freelance
-          </div>
-        </div>
 
         <ul>
           <li className="nav-anim">
@@ -173,13 +167,6 @@ const Navbar = () => {
           </li>
           <li className="nav-anim">
             <div className="magnetic-wrap">
-              <a className="magnetic-inner" data-href="#contact" href="#contact">
-                <HoverLinks text="CONTACT" />
-              </a>
-            </div>
-          </li>
-          <li className="nav-anim">
-            <div className="magnetic-wrap">
               <a className="magnetic-inner" data-href="#certificates" href="#certificates">
                 <HoverLinks text="CERTIFICATES" />
               </a>
@@ -189,6 +176,13 @@ const Navbar = () => {
             <div className="magnetic-wrap">
               <a className="magnetic-inner" data-href="#achievements" href="#achievements">
                 <HoverLinks text="ACHIEVEMENTS" />
+              </a>
+            </div>
+          </li>
+          <li className="nav-anim">
+            <div className="magnetic-wrap">
+              <a className="magnetic-inner" data-href="#contact" href="#contact">
+                <HoverLinks text="CONTACT" />
               </a>
             </div>
           </li>
