@@ -178,6 +178,20 @@ const Navbar = () => {
               </a>
             </div>
           </li>
+          <li className="nav-anim">
+            <div className="magnetic-wrap">
+              <a className="magnetic-inner" data-href="#certificates" href="#certificates">
+                <HoverLinks text="CERTIFICATES" />
+              </a>
+            </div>
+          </li>
+          <li className="nav-anim">
+            <div className="magnetic-wrap">
+              <a className="magnetic-inner" data-href="#achievements" href="#achievements">
+                <HoverLinks text="ACHIEVEMENTS" />
+              </a>
+            </div>
+          </li>
         </ul>
       </div>
 

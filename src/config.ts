@@ -197,7 +197,88 @@ export const config = {
             details: "Building responsive and performant web applications using modern web technologies and databases. Creating seamless user experiences with modern UI/UX principles.",
             tools: ["React", "Next.js", "Node.js", "TypeScript", "TailwindCSS", "REST APIs", "Git"]
         }
-    }
+    },
+    certificates: [
+        {
+            id: 1,
+            title: "Software Engineer Certificate",
+            issuer: "HackerRank",
+            date: "Oct 2025",
+            image: "/images/hackerrank.png",
+            link: "https://www.hackerrank.com/certificates/335f8aeaab90"
+        },
+        {
+            id: 2,
+            title: "Java Maestro: Hands-On Training on Developing GUI Applications",
+            issuer: "LPU",
+            date: "July 2025",
+            image: "/images/JavaMaestro.png",
+            link: "https://files.lpu.in/umsweb/skilldevcourse/SkillDevelopmentCertificates/12308662_834_20_08_2025.pdf?_gl=1*1c8qy3x*_gcl_au*MTIyODI3NjUwNC4xNzc0MjY2ODQx"
+        },
+        {
+            id: 3,
+            title: "Algo-N-Hunt",
+            issuer: "Google Student Ambassador Program",
+            date: "Nov 2025",
+            image: "/images/Algo-N-Hunt.jpg",
+            link: "#"
+        },
+        {
+            id: 4,
+            title: "24-hour Hackathon (3rd position)",
+            issuer: "ECHO Club LPU",
+            date: "Feb 2024",
+            image: "/images/hackathon.jpg",
+            link: "#"
+        },
+        {
+            id: 5,
+            title: "Adobe India Hackathon",
+            issuer: "Adobe India-Unstop",
+            date: "Aug 2025",
+            image: "/images/Online.jpg",
+            link: "https://unstop.com/certificate-preview/7fc18542-c986-489f-90f0-3db431fbcab5"
+        },
+        {
+            id: 6,
+            title: "Adobe India Hackathon",
+            issuer: "Adobe India-Unstop",
+            date: "Aug 2025",
+            image: "/images/Online.jpg",
+            link: "https://unstop.com/certificate-preview/7fc18542-c986-489f-90f0-3db431fbcab5"
+        },
+        {
+            id: 7,
+            title: "Foundations of User Experience (UX) Design",
+            issuer: "Coursera",
+            date: "Jul 2025",
+            image: "/images/Coursera.png",
+            link: "https://www.coursera.org/account/accomplishments/verify/4MNCD3PAT3EJ"
+        }
+    ],
+    achievements: [
+        {
+            id: 1,
+            title: "24-hour Hackathon\n(3rd Position out of 2,000+ students)",
+            description: "As the leader of Alpha Tech, I am proud to announce that during a 24-hour Hackathon, our dedicated team poured their passion into creating a website aimed at Smart and Effective Real-time Management of street parking.",
+            date: "Feb 2024",
+            icon: "🥉"
+        },
+        {
+            id: 2,
+            title: "Open Source Contributor",
+            description: "Major contributions to popular React ecosystems, accepted into core repositories.",
+            date: "Jan 2026",
+            icon: "⭐"
+        },
+        {
+            id: 3,
+            title: "640+ Problems Solved on LeetCode",
+            description: "Ranked in the top 20% globally with 20 earned badges (including the 365 Days Badge). Maintained a 103-day max streak and mastered 124 Hard & 330 Medium problems.",
+            date: "Active",
+            icon: "💻"
+        }
+    ]
 };
 
 
