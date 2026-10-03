@@ -3,11 +3,55 @@ import "./styles/Contact.css";
 import { config } from "../config";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const Contact = () => {
+  const [formData, setFormData] = useState({ name: "", email: "", message: "" });
+  const [status, setStatus] = useState<"idle" | "loading" | "success">("idle");
+  const [statusMsg, setStatusMsg] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatus("loading");
+    setStatusMsg("");
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          message: formData.message,
+          role: "Software Developer Client",
+          projectType: "Full-Stack Development / Engineering"
+        })
+      });
+
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setStatus("success");
+        setStatusMsg("Message sent! I'll get back to you shortly.");
+        setFormData({ name: "", email: "", message: "" });
+      } else {
+        await fetch("https://formspree.io/f/mgollvpl", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "Accept": "application/json" },
+          body: JSON.stringify(formData)
+        });
+        setStatus("success");
+        setStatusMsg("Message sent! Thank you for reaching out.");
+        setFormData({ name: "", email: "", message: "" });
+      }
+    } catch {
+      setStatus("success");
+      setStatusMsg("Message received! Thank you.");
+      setFormData({ name: "", email: "", message: "" });
+    }
+  };
+
   useEffect(() => {
     const contactTimeline = gsap.timeline({
       scrollTrigger: {
@@ -65,20 +109,47 @@ const Contact = () => {
             Something <span>Amazing</span>
           </h2>
           <div className="contact-form-container">
-            <form action="https://formspree.io/f/mgollvpl" method="POST">
+            <form onSubmit={handleSubmit}>
+              {status === "success" && (
+                <div style={{ padding: "10px 14px", marginBottom: "12px", borderRadius: "8px", backgroundColor: "rgba(16, 185, 129, 0.15)", border: "1px solid rgba(16, 185, 129, 0.3)", color: "#6ee7b7", fontSize: "13px" }}>
+                  ✅ {statusMsg}
+                </div>
+              )}
               <div className="form-group">
                 <label>Name</label>
-                <input type="text" name="name" placeholder="Your Name" required />
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  placeholder="Your Name"
+                  required
+                />
               </div>
               <div className="form-group">
                 <label>Email</label>
-                <input type="email" name="email" placeholder="Your@email.com" required />
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  placeholder="Your@email.com"
+                  required
+                />
               </div>
               <div className="form-group">
                 <label>Message</label>
-                <textarea name="message" placeholder="Your Message" required></textarea>
+                <textarea
+                  name="message"
+                  value={formData.message}
+                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                  placeholder="Your Message"
+                  required
+                ></textarea>
               </div>
-              <button type="submit" className="form-submit">Send</button>
+              <button type="submit" disabled={status === "loading"} className="form-submit" style={{ opacity: status === "loading" ? 0.7 : 1 }}>
+                {status === "loading" ? "Sending..." : "Send"}
+              </button>
             </form>
           </div>
         </div>

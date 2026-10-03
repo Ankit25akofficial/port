@@ -26,5 +26,8 @@ dist-ssr
 
 backup/
 .env
+*.env*
 redoxchess-engine/
 public/models/character.glb
+vite.config.ts.timestamp-*
+

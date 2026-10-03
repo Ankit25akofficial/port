@@ -81,7 +81,11 @@ const TechStackNew = () => {
           loop
           muted
           playsInline
-          className="techstack-video"
+          controlsList="nodownload noplaybackrate"
+          disablePictureInPicture
+          onContextMenu={(e) => e.preventDefault()}
+          onDragStart={(e) => e.preventDefault()}
+          className="techstack-video select-none pointer-events-none"
         >
           <source src="/video/video.webm" type="video/webm" />
         </video>

@@ -1,54 +1,76 @@
 import { useEffect, useRef } from "react";
 import "./styles/Cursor.css";
-import gsap from "gsap";
 
 const Cursor = () => {
   const cursorRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
+    // Disable custom cursor on touch/mobile devices for max performance
+    if (window.matchMedia("(pointer: coarse)").matches) return;
+
     let hover = false;
-    const cursor = cursorRef.current!;
-    const mousePos = { x: 0, y: 0 };
-    const cursorPos = { x: 0, y: 0 };
-    document.addEventListener("mousemove", (e) => {
+    let animId: number;
+    const cursor = cursorRef.current;
+    if (!cursor) return;
+
+    const mousePos = { x: -100, y: -100 };
+    const cursorPos = { x: -100, y: -100 };
+
+    const handleMouseMove = (e: MouseEvent) => {
       mousePos.x = e.clientX;
       mousePos.y = e.clientY;
-    });
-    requestAnimationFrame(function loop() {
+    };
+
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
+
+    const loop = () => {
       if (!hover) {
-        const delay = 6;
+        const delay = 5;
         cursorPos.x += (mousePos.x - cursorPos.x) / delay;
         cursorPos.y += (mousePos.y - cursorPos.y) / delay;
-        gsap.to(cursor, { x: cursorPos.x, y: cursorPos.y, duration: 0.1 });
-        // cursor.style.transform = `translate(${cursorPos.x}px, ${cursorPos.y}px)`;
+        cursor.style.transform = `translate3d(${cursorPos.x}px, ${cursorPos.y}px, 0)`;
       }
-      requestAnimationFrame(loop);
-    });
-    document.querySelectorAll("[data-cursor]").forEach((item) => {
-      const element = item as HTMLElement;
-      element.addEventListener("mouseover", (e: MouseEvent) => {
-        const target = e.currentTarget as HTMLElement;
+      animId = requestAnimationFrame(loop);
+    };
+
+    animId = requestAnimationFrame(loop);
+
+    const handleMouseOver = (e: Event) => {
+      const target = (e.currentTarget as HTMLElement);
+      const cursorType = target.dataset.cursor;
+      if (cursorType === "icons") {
         const rect = target.getBoundingClientRect();
+        cursor.classList.add("cursor-icons");
+        cursor.style.transform = `translate3d(${rect.left}px, ${rect.top}px, 0)`;
+        cursor.style.setProperty("--cursorH", `${rect.height}px`);
+        hover = true;
+      } else if (cursorType === "disable") {
+        cursor.classList.add("cursor-disable");
+      }
+    };
 
-        if (element.dataset.cursor === "icons") {
-          cursor.classList.add("cursor-icons");
+    const handleMouseOut = () => {
+      cursor.classList.remove("cursor-disable", "cursor-icons");
+      hover = false;
+    };
 
-          gsap.to(cursor, { x: rect.left, y: rect.top, duration: 0.1 });
-          //   cursor.style.transform = `translate(${rect.left}px,${rect.top}px)`;
-          cursor.style.setProperty("--cursorH", `${rect.height}px`);
-          hover = true;
-        }
-        if (element.dataset.cursor === "disable") {
-          cursor.classList.add("cursor-disable");
-        }
-      });
-      element.addEventListener("mouseout", () => {
-        cursor.classList.remove("cursor-disable", "cursor-icons");
-        hover = false;
-      });
+    const elements = document.querySelectorAll("[data-cursor]");
+    elements.forEach((item) => {
+      item.addEventListener("mouseenter", handleMouseOver, { passive: true });
+      item.addEventListener("mouseleave", handleMouseOut, { passive: true });
     });
+
+    return () => {
+      cancelAnimationFrame(animId);
+      window.removeEventListener("mousemove", handleMouseMove);
+      elements.forEach((item) => {
+        item.removeEventListener("mouseenter", handleMouseOver);
+        item.removeEventListener("mouseleave", handleMouseOut);
+      });
+    };
   }, []);
 
-  return <div className="cursor-main" ref={cursorRef}></div>;
+  return <div className="cursor-main will-change-transform" ref={cursorRef}></div>;
 };
 
 export default Cursor;

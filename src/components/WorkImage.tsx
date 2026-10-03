@@ -36,8 +36,20 @@ const WorkImage = (props: Props) => {
             <MdArrowOutward />
           </div>
         )}
-        <img src={props.image} alt={props.alt} />
-        {isVideo && <video src={video} autoPlay muted playsInline loop></video>}
+        {isVideo && (
+          <video
+            src={video}
+            autoPlay
+            muted
+            playsInline
+            loop
+            controlsList="nodownload noplaybackrate"
+            disablePictureInPicture
+            onContextMenu={(e) => e.preventDefault()}
+            onDragStart={(e) => e.preventDefault()}
+            className="select-none pointer-events-none"
+          />
+        )}
       </a>
     </div>
   );
