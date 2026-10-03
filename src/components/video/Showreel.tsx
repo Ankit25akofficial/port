@@ -7,27 +7,29 @@ import { RiMovieFill } from "react-icons/ri";
 
 const Showreel = () => {
   const [isMuted, setIsMuted] = useState(true);
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const videoEl = videoRef.current;
     if (!videoEl) return;
 
+    videoEl.muted = true;
+    videoEl.defaultMuted = true;
+    videoEl.play().catch(() => {});
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            videoEl.play().catch((err) => {
-              console.log("Autoplay notice:", err);
-            });
-          } else {
-            videoEl.pause();
+          if (entry.isIntersecting && videoEl) {
+            videoEl.muted = true;
+            videoEl.defaultMuted = true;
+            videoEl.play().catch(() => {});
           }
         });
       },
       {
-        threshold: 0.15,
+        threshold: 0.05,
       }
     );
 
@@ -45,6 +47,9 @@ const Showreel = () => {
       const nextMuted = !videoRef.current.muted;
       videoRef.current.muted = nextMuted;
       setIsMuted(nextMuted);
+      if (videoRef.current.paused) {
+        videoRef.current.play().catch(() => {});
+      }
     }
   };
 
@@ -132,14 +137,32 @@ const Showreel = () => {
 
                 {/* Video Player */}
                 <video
-                  ref={videoRef}
+                  ref={(el) => {
+                    videoRef.current = el;
+                    if (el) {
+                      el.muted = true;
+                      el.defaultMuted = true;
+                    }
+                  }}
                   src={SHOWREEL_VIDEO_URL}
                   poster={SHOWREEL_POSTER}
-                  muted={isMuted}
+                  muted
                   autoPlay
                   loop
                   playsInline
                   preload="auto"
+                  onCanPlay={(e) => {
+                    const v = e.currentTarget;
+                    v.muted = true;
+                    v.defaultMuted = true;
+                    v.play().catch(() => {});
+                  }}
+                  onLoadedMetadata={(e) => {
+                    const v = e.currentTarget;
+                    v.muted = true;
+                    v.defaultMuted = true;
+                    v.play().catch(() => {});
+                  }}
                   controlsList="nodownload noplaybackrate"
                   disablePictureInPicture
                   onContextMenu={(e) => e.preventDefault()}
