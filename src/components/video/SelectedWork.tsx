@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { SHORT_FORM_PROJECTS, ShortFormProject } from "../../data/videoPortfolioData";
 import { HiVolumeUp, HiVolumeOff } from "react-icons/hi";
 import { IoClose, IoExpand } from "react-icons/io5";
@@ -7,12 +7,50 @@ import { BsStars } from "react-icons/bs";
 const SelectedWork = () => {
   const [modalProject, setModalProject] = useState<ShortFormProject | null>(null);
   const videoRefs = useRef<{ [key: string]: HTMLVideoElement | null }>({});
+  const sectionRef = useRef<HTMLElement>(null);
 
   const [mutedStates, setMutedStates] = useState<Record<string, boolean>>({
     "porsche-911-edit": true,
     "chatgpt-motion-graphics": true,
     "tu11-motion-graphics": true,
   });
+
+  // Ensure all videos play reliably when scrolled into view
+  useEffect(() => {
+    const playAll = () => {
+      Object.values(videoRefs.current).forEach((vid) => {
+        if (vid) {
+          vid.muted = true;
+          vid.defaultMuted = true;
+          const playPromise = vid.play();
+          if (playPromise !== undefined) {
+            playPromise.catch(() => {});
+          }
+        }
+      });
+    };
+
+    // Immediate attempt on mount
+    playAll();
+
+    // IntersectionObserver trigger
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            playAll();
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
 
   const toggleMute = (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
@@ -55,7 +93,13 @@ const SelectedWork = () => {
       >
         {/* Continuous Autoplay Video */}
         <video
-          ref={(el) => (videoRefs.current[project.id] = el)}
+          ref={(el) => {
+            videoRefs.current[project.id] = el;
+            if (el) {
+              el.muted = isMuted;
+              el.defaultMuted = true;
+            }
+          }}
           src={project.videoUrl}
           poster={project.thumbnail}
           autoPlay
@@ -63,6 +107,12 @@ const SelectedWork = () => {
           loop
           muted={isMuted}
           preload="auto"
+          onCanPlay={(e) => {
+            const v = e.currentTarget;
+            v.muted = true;
+            v.defaultMuted = true;
+            v.play().catch(() => {});
+          }}
           controlsList="nodownload noplaybackrate"
           disablePictureInPicture
           onContextMenu={(e) => e.preventDefault()}
@@ -136,7 +186,7 @@ const SelectedWork = () => {
   const p2 = SHORT_FORM_PROJECTS[2]; // Right Bottom: TU11 Kinetic VFX Edit
 
   return (
-    <section id="work" className="py-24 md:py-36 relative bg-[#06060a] overflow-hidden">
+    <section id="work" ref={sectionRef} className="py-24 md:py-36 relative bg-[#06060a] overflow-hidden">
       {/* Ambient background studio aura */}
       <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[500px] bg-gradient-to-r from-violet-600/15 via-purple-600/20 to-indigo-600/15 rounded-full blur-[170px] pointer-events-none" />
 
