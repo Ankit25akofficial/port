@@ -15,12 +15,17 @@ const Loading = ({ percent }: { percent: number }) => {
       setTimeout(() => {
         const tl = gsap.timeline({
           onComplete: () => {
-            import("./utils/initialFX").then((module) => {
-              if (module.initialFX) {
-                module.initialFX();
-              }
+            try {
+              import("./utils/initialFX").then((module) => {
+                if (module && module.initialFX) {
+                  module.initialFX();
+                }
+              }).finally(() => {
+                setIsLoading(false);
+              });
+            } catch {
               setIsLoading(false);
-            });
+            }
           },
         });
 

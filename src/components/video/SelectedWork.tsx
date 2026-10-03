@@ -1,75 +1,41 @@
 import { useState, useRef } from "react";
 import { SHORT_FORM_PROJECTS, ShortFormProject } from "../../data/videoPortfolioData";
 import { HiVolumeUp, HiVolumeOff } from "react-icons/hi";
-import { IoClose, IoPlay, IoExpand } from "react-icons/io5";
-import { BsPlayFill, BsStars } from "react-icons/bs";
+import { IoClose, IoExpand } from "react-icons/io5";
+import { BsStars } from "react-icons/bs";
 
 const SelectedWork = () => {
-  const [activeVideoId, setActiveVideoId] = useState<string | null>(null);
   const [modalProject, setModalProject] = useState<ShortFormProject | null>(null);
-  const [isPaused, setIsPaused] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
-  const [hoveredCardId, setHoveredCardId] = useState<string | null>(null);
   const videoRefs = useRef<{ [key: string]: HTMLVideoElement | null }>({});
 
-  const handleCardClick = (project: ShortFormProject) => {
-    if (activeVideoId === project.id) {
-      const vid = videoRefs.current[project.id];
-      if (vid) {
-        if (vid.paused) {
-          vid.play().catch(() => {});
-          setIsPaused(false);
-        } else {
-          vid.pause();
-          setIsPaused(true);
-        }
-      }
-    } else {
-      // Pause previous active video
-      if (activeVideoId && videoRefs.current[activeVideoId]) {
-        videoRefs.current[activeVideoId]?.pause();
-      }
-      setActiveVideoId(project.id);
-      setIsPaused(false);
-
-      // Immediately play selected video
-      setTimeout(() => {
-        const newVid = videoRefs.current[project.id];
-        if (newVid) {
-          newVid.currentTime = 0;
-          newVid.play().catch(() => {
-            newVid.muted = true;
-            setIsMuted(true);
-            newVid.play().catch(() => {});
-          });
-        }
-      }, 50);
-    }
-  };
-
-  const handleStopVideo = (e: React.MouseEvent, id: string) => {
-    e.stopPropagation();
-    if (videoRefs.current[id]) {
-      videoRefs.current[id]?.pause();
-    }
-    setActiveVideoId(null);
-    setIsPaused(false);
-  };
+  const [mutedStates, setMutedStates] = useState<Record<string, boolean>>({
+    "porsche-911-edit": true,
+    "chatgpt-motion-graphics": true,
+    "tu11-motion-graphics": true,
+  });
 
   const toggleMute = (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
-    if (videoRefs.current[id]) {
-      const nextMuted = !videoRefs.current[id]!.muted;
-      videoRefs.current[id]!.muted = nextMuted;
-      setIsMuted(nextMuted);
+    const vid = videoRefs.current[id];
+    const newMuted = !mutedStates[id];
+    if (vid) {
+      vid.muted = newMuted;
+    }
+    setMutedStates((prev) => ({ ...prev, [id]: newMuted }));
+  };
+
+  const handleCardClick = (project: ShortFormProject) => {
+    const vid = videoRefs.current[project.id];
+    if (vid) {
+      if (vid.muted) {
+        vid.muted = false;
+        setMutedStates((prev) => ({ ...prev, [project.id]: false }));
+      }
     }
   };
 
   const openTheaterModal = (e: React.MouseEvent, project: ShortFormProject) => {
     e.stopPropagation();
-    if (activeVideoId && videoRefs.current[activeVideoId]) {
-      videoRefs.current[activeVideoId]?.pause();
-    }
     setModalProject(project);
   };
 
@@ -77,126 +43,90 @@ const SelectedWork = () => {
     setModalProject(null);
   };
 
-  const renderCard = (project: ShortFormProject, customClass = "", isTall = false) => {
-    const isPlaying = activeVideoId === project.id;
-    const isHovered = hoveredCardId === project.id;
+  const renderCard = (project: ShortFormProject, customClass = "") => {
+    const isMuted = mutedStates[project.id] ?? true;
 
     return (
       <div
         key={project.id}
         onClick={() => handleCardClick(project)}
-        onMouseEnter={() => setHoveredCardId(project.id)}
         style={{ aspectRatio: "9/16" }}
-        className={`relative w-full aspect-[9/16] rounded-3xl overflow-hidden bg-[#0d0d15] cursor-pointer select-none transition-all duration-300 group/card ${customClass} ${
-          isPlaying
-            ? "ring-4 ring-violet-500 shadow-[0_0_50px_rgba(168,85,247,0.6)] scale-[1.01] z-20"
-            : "border border-white/15 hover:border-violet-500/60 hover:shadow-[0_20px_50px_rgba(168,85,247,0.25)] hover:-translate-y-1.5"
-        }`}
+        className={`relative w-full aspect-[9/16] rounded-3xl overflow-hidden bg-black cursor-pointer select-none transition-all duration-300 group/card border border-white/15 hover:border-violet-500/80 hover:shadow-[0_20px_60px_rgba(168,85,247,0.35)] hover:-translate-y-1.5 ${customClass}`}
       >
-        {isPlaying ? (
-          /* PURE CLEAN FULL-BLEED VIDEO PLAYBACK */
-          <div className="relative w-full h-full bg-black flex items-center justify-center">
-            <video
-              ref={(el) => (videoRefs.current[project.id] = el)}
-              src={project.videoUrl}
-              autoPlay
-              playsInline
-              loop
-              muted={isMuted}
-              controlsList="nodownload noplaybackrate"
-              disablePictureInPicture
-              onContextMenu={(e) => e.preventDefault()}
-              onDragStart={(e) => e.preventDefault()}
-              className="w-full h-full object-cover select-none pointer-events-auto"
-            />
+        {/* Continuous Autoplay Video */}
+        <video
+          ref={(el) => (videoRefs.current[project.id] = el)}
+          src={project.videoUrl}
+          poster={project.thumbnail}
+          autoPlay
+          playsInline
+          loop
+          muted={isMuted}
+          preload="auto"
+          controlsList="nodownload noplaybackrate"
+          disablePictureInPicture
+          onContextMenu={(e) => e.preventDefault()}
+          onDragStart={(e) => e.preventDefault()}
+          className="w-full h-full object-cover select-none pointer-events-auto filter brightness-95 group-hover/card:brightness-105 transition-all"
+        />
 
-            {/* Floating Top Controls (Visible on Hover / Tap) */}
-            <div 
-              className={`absolute top-3.5 inset-x-3.5 flex items-center justify-between z-30 transition-opacity duration-200 ${
-                isHovered || isPaused ? "opacity-100" : "opacity-0 sm:opacity-80"
-              }`}
+        {/* Gradient Shadow Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-black/30 pointer-events-none transition-opacity duration-300" />
+
+        {/* Top Floating Controls Bar */}
+        <div className="absolute top-3.5 inset-x-3.5 flex items-center justify-between z-30 pointer-events-auto">
+          {/* Sound Toggle Button */}
+          <button
+            onClick={(e) => toggleMute(e, project.id)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/80 hover:bg-violet-600 border border-white/20 text-white text-xs shadow-2xl backdrop-blur-xl transition-all active:scale-90"
+            aria-label={isMuted ? "Unmute Sound" : "Mute Sound"}
+            title={isMuted ? "Unmute Sound" : "Mute Sound"}
+          >
+            {isMuted ? (
+              <>
+                <HiVolumeOff className="text-gray-300 text-sm" />
+                <span className="text-[10px] text-gray-300 font-mono hidden sm:inline">Muted</span>
+              </>
+            ) : (
+              <>
+                <HiVolumeUp className="text-violet-300 text-sm animate-pulse" />
+                <span className="text-[10px] text-violet-200 font-bold font-mono">Sound ON</span>
+              </>
+            )}
+          </button>
+
+          <div className="flex items-center gap-1.5">
+            {/* Expand / Theater Mode */}
+            <button
+              onClick={(e) => openTheaterModal(e, project)}
+              className="h-8 w-8 rounded-full bg-black/80 hover:bg-violet-600 border border-white/20 text-white grid place-items-center text-xs shadow-2xl backdrop-blur-xl transition-transform active:scale-90"
+              aria-label="Full Theater Mode"
+              title="Full Theater Mode"
             >
-              <button
-                onClick={(e) => toggleMute(e, project.id)}
-                className="h-8 w-8 sm:h-9 sm:w-9 rounded-full bg-black/80 hover:bg-violet-600 border border-white/20 text-white grid place-items-center text-xs shadow-2xl backdrop-blur-xl transition-transform active:scale-90"
-                aria-label={isMuted ? "Unmute" : "Mute"}
-                title={isMuted ? "Unmute" : "Mute"}
-              >
-                {isMuted ? <HiVolumeOff className="text-gray-300" /> : <HiVolumeUp className="text-violet-300" />}
-              </button>
+              <IoExpand className="text-sm" />
+            </button>
+          </div>
+        </div>
 
-              <div className="flex items-center gap-1.5">
-                <button
-                  onClick={(e) => openTheaterModal(e, project)}
-                  className="h-8 w-8 sm:h-9 sm:w-9 rounded-full bg-black/80 hover:bg-violet-600 border border-white/20 text-white grid place-items-center text-xs shadow-2xl backdrop-blur-xl transition-transform active:scale-90"
-                  aria-label="Theater Mode"
-                  title="Full Theater Mode"
-                >
-                  <IoExpand className="text-sm" />
-                </button>
-                <button
-                  onClick={(e) => handleStopVideo(e, project.id)}
-                  className="h-8 w-8 sm:h-9 sm:w-9 rounded-full bg-black/80 hover:bg-red-600 border border-white/20 text-white grid place-items-center text-xs shadow-2xl backdrop-blur-xl transition-transform active:scale-90"
-                  aria-label="Close"
-                  title="Close video"
-                >
-                  <IoClose className="text-base sm:text-lg" />
-                </button>
-              </div>
-            </div>
-
-            {/* Center Pause Indicator */}
-            {isPaused && (
-              <div className="absolute inset-0 bg-black/40 backdrop-blur-[1px] flex items-center justify-center pointer-events-none z-20">
-                <div className="w-14 h-14 rounded-full bg-violet-600/90 text-white grid place-items-center border border-white/20 shadow-2xl">
-                  <IoPlay className="text-2xl ml-0.5" />
-                </div>
-              </div>
+        {/* Bottom Project Info Bar */}
+        <div className="absolute bottom-0 inset-x-0 p-4 sm:p-5 z-20 pointer-events-none">
+          <div className="flex items-center gap-2 mb-1">
+            <span className="px-2 py-0.5 rounded-full bg-violet-600/80 text-[9px] font-bold uppercase tracking-wider text-white border border-white/10 shadow-sm">
+              {project.category}
+            </span>
+            {project.views && (
+              <span className="text-[10px] text-gray-400 font-mono">
+                {project.views}
+              </span>
             )}
           </div>
-        ) : (
-          /* CLEAN MINIMALIST THUMBNAIL */
-          <div className="relative w-full h-full">
-            <img
-              src={project.thumbnail}
-              alt={project.title}
-              loading="lazy"
-              decoding="async"
-              className="w-full h-full object-cover transition-transform duration-700 group-hover/card:scale-105 filter brightness-95"
-            />
-
-            {/* Gradient Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-black/20 group-hover/card:from-black/90 transition-colors" />
-
-            {/* Category Tag Top Left */}
-            <div className="absolute top-3.5 left-3.5 z-10">
-              <span className="px-2.5 py-0.5 rounded-full bg-black/60 backdrop-blur-md text-[9px] font-bold uppercase tracking-wider text-violet-300 border border-white/15 shadow-md">
-                {project.category}
-              </span>
-            </div>
-
-            {/* Center Glowing Play Button */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className={`rounded-full bg-violet-600/90 text-white flex items-center justify-center shadow-[0_0_25px_rgba(168,85,247,0.85)] border border-white/25 transform group-hover/card:scale-115 transition-transform duration-300 ${
-                isTall ? "w-14 h-14" : "w-12 h-12"
-              }`}>
-                <BsPlayFill className={`${isTall ? "text-3xl" : "text-2xl"} ml-0.5`} />
-              </div>
-            </div>
-
-            {/* Clean Bottom Title Bar */}
-            <div className="absolute bottom-0 inset-x-0 p-4 sm:p-5 z-10">
-              <span className="text-[10px] font-mono uppercase tracking-widest text-violet-400 font-semibold block mb-0.5">
-                {project.client}
-              </span>
-              <h4 className={`font-bold text-white font-['Space_Grotesk'] leading-tight group-hover/card:text-violet-300 transition-colors ${
-                isTall ? "text-base sm:text-lg" : "text-sm sm:text-base"
-              }`}>
-                {project.title}
-              </h4>
-            </div>
-          </div>
-        )}
+          <span className="text-[10px] font-mono uppercase tracking-widest text-violet-300 font-semibold block">
+            {project.client}
+          </span>
+          <h4 className="font-bold text-white font-['Space_Grotesk'] text-sm sm:text-base leading-tight group-hover/card:text-violet-200 transition-colors mt-0.5">
+            {project.title}
+          </h4>
+        </div>
       </div>
     );
   };
